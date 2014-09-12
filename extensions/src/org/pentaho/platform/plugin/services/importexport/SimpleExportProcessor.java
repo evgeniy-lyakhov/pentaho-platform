@@ -23,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.pentaho.platform.api.repository2.unified.IUnifiedRepository;
 import org.pentaho.platform.api.repository2.unified.RepositoryFile;
+import org.pentaho.platform.plugin.services.messages.Messages;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,10 +64,9 @@ public class SimpleExportProcessor extends BaseExportProcessor {
    */
   public File performExport( RepositoryFile exportRepositoryFile ) throws ExportException, IOException {
     OutputStream os;
-    File exportFile = null;
 
     // create temp file
-    exportFile = File.createTempFile( EXPORT_TEMP_FILENAME_PREFIX, EXPORT_TEMP_FILENAME_EXT );
+    File exportFile = File.createTempFile( EXPORT_TEMP_FILENAME_PREFIX, EXPORT_TEMP_FILENAME_EXT );
     exportFile.deleteOnExit();
 
     // get the file path
@@ -74,8 +74,8 @@ public class SimpleExportProcessor extends BaseExportProcessor {
 
     // send a response right away if not found
     if ( exportRepositoryFile == null ) {
-      // todo: add to messages.properties
-      throw new FileNotFoundException( "JCR file not found: " + this.path );
+      throw new FileNotFoundException(
+        Messages.getInstance().getErrorString( "Exporter.ERROR_0003_MISSING_DESTINATION", this.path ) );
     }
 
     os = new FileOutputStream( exportFile );
